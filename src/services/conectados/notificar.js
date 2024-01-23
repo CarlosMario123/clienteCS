@@ -1,5 +1,5 @@
 async function notificar(){
-    const url = 'http://localhost:3000/conectados';
+    const url = 'http://localhost:8000/conectados';
 
 fetch(url, {
   method: 'POST',

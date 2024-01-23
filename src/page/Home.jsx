@@ -4,25 +4,30 @@ import Conteo from '../componentes/Conteo'
 import ContainChat from '../componentes/ContainChat'
 import notificar from '../services/conectados/notificar';
 import Pizzarra from '../componentes/Pizzarra';
-
+import JoinTeam from '../componentes/JoinTeam';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 export default function Home() {
-
+  const { localStorageValue, updateLocalStorageValue } = useLocalStorage("token");
 
     useEffect(()=>{
        notificar();
     });
   return (
-    <div className='w-full flex flex-col'>
+    <div className='flex flex-col w-full'>
         <Nav/>
   
   <div className='flex w-full justify-evenly'>
-  <div className='px-4 flex gap-x-2 w-1/2 items-start mt-10 '>
+  <div className='flex items-start w-1/2 px-4 mt-10 gap-x-2 '>
         <Conteo/>
-        <ContainChat/>
+        {
+          localStorageValue.length > 10 ? <ContainChat token={localStorageValue}/> : <p>Cargando</p>
+        }
+        
          </div>
 
-         <div className=' mt-10'>
+         <div className='mt-10 '>
          <Pizzarra/>
+         <JoinTeam/>
          </div>
   </div>
       

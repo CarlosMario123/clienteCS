@@ -2,7 +2,7 @@ import React from 'react'
 
 import useLongPolling from '../hooks/UseLongPoll'
 export default function Conteo() {
-    const data = useLongPolling('http://localhost:3000/conexion', 5000);
+    const data = useLongPolling('http://localhost:8000/conexion', 5000);
   return (
     <>
      <div className="stats shadow shadow-primary w-[12rem]">

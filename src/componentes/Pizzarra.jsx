@@ -2,7 +2,7 @@
 import useShortPollingWithWrite from "../hooks/useShortPoll";
 
 const Pizarra = () => {
-  const url = 'http://localhost:3000/pizarra';
+  const url = 'http://localhost:8000/pizarra';
   const { contenidoActual, handleChangeContenido } = useShortPollingWithWrite(url);
 
   return (

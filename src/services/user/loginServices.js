@@ -2,7 +2,7 @@ export default async function loginService(user){
 
  // Aquí puedes realizar acciones con los datos del formulario, como enviarlos a una API
  try {
-    const response = await fetch('http://localhost:3000/usuario/login', {
+    const response = await fetch('http://localhost:8000/usuario/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

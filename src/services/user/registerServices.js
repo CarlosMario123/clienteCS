@@ -3,7 +3,7 @@ export default async function registerUser(user){
 
  // Aquí puedes realizar acciones con los datos del formulario, como enviarlos a una API
  try {
-    const response = await fetch('http://localhost:3000/usuario', {
+    const response = await fetch('http://localhost:8000/usuario', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
