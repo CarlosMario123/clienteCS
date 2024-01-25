@@ -5,10 +5,15 @@ import PrivateRoute from './routesPrivate/PrivateRoute';
 import Home from './page/Home';
 import Chat from './page/Prueba';
 import io from 'socket.io-client';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
-const socket = io('http://localhost:8000'); 
 function App() {
-
+ const token = useLocalStorage("token");
+ const socket = io('http://localhost:8000',{
+  query:{
+    token :token.localStorageValue
+  }
+}); 
 
   return (
     <>
@@ -18,7 +23,7 @@ function App() {
     <Route path="/" element={<Register/>} />
     <Route path="/login" element = {<Login/>}/>
      <Route path='/home' element = {<PrivateRoute element={<Home/>}/>}/>
-     <Route path='/rooms/:roomName' element = {<PrivateRoute element={<Chat socket={socket}/>}/>}/>
+     <Route path='/rooms/:roomName' element = {<PrivateRoute element={<Chat socket={socket} token={token}/>}/>}/>
   </Routes>
 
 </Router>
