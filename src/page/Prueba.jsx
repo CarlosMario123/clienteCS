@@ -1,92 +1,81 @@
-// src/App.js
-import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
+// ChatRoom.js
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
-const socket = io("http://localhost:8000"); 
-
-function Chat() {
-  const [username, setUsername] = useState("");
-  const [room, setRoom] = useState("");
-  const [message, setMessage] = useState("");
-  const [chat, setChat] = useState([]);
+const ChatRoom = ({ socket }) => {
+  const { roomName } = useParams();
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    socket.on("chat:message", (data) => {
-      setChat((prevChat) => [...prevChat, data]);
-    });
+    // Al montarse el componente, unirse automáticamente a la sala
+    socket.emit('chat:join', roomName);
 
-    socket.on("chat:system", (systemMessage) => {
-      setChat((prevChat) => [...prevChat, { systemMessage }]);
-    });
+    // Limpiar la suscripción cuando el componente se desmonte
+    return () => {
+      socket.emit('chat:leave', roomName);
+    };
+  }, [socket, roomName]);
+
+  // Manejar el envío de un nuevo mensaje
+  const handleSendMessage = () => {
+    if (newMessage.trim() !== '') {
+      socket.emit('chat:send', { room: roomName, message: newMessage });
+      setNewMessage('');
+    }
+  };
+
+  // Manejar la recepción de un nuevo mensaje
+  useEffect(() => {
+    const handleReceiveMessage = (data) => {
+      setMessages((prevMessages) => [...prevMessages, { user: data.user, message: data.message }]);
+    };
+
+    socket.on('chat:message', handleReceiveMessage);
 
     return () => {
-      socket.disconnect();
+      socket.off('chat:message', handleReceiveMessage);
     };
-  }, []);
+  }, [socket]);
 
-  const handleJoinRoom = () => {
-    socket.emit("chat:join", room);
-  };
-
+  // Manejar la salida de la sala y navegación a /home
   const handleLeaveRoom = () => {
-    socket.emit("chat:leave", room);
-  };
-
-  const handleSendMessage = () => {
-    socket.emit("chat:send", { room, user: username, message });
-    setMessage("");
+    socket.emit('chat:leave', roomName);
+    navigate('/home');
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="p-4 text-black bg-blue-500">
+    <div className="max-w-3xl p-4 mx-auto mt-10 border rounded-lg shadow-md">
+      <h2 className="mb-4 text-3xl font-bold">Sala de Chat: {roomName}</h2>
+
+      <div className="mb-4 overflow-y-auto max-h-96">
+        <ul>
+          {messages.map((msg, index) => (
+            <li key={index} className="mb-2">
+              <span className="font-semibold text-blue-500">{msg.user}:</span> {msg.message}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="flex">
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="p-2 mr-2"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          placeholder="Escribe un mensaje..."
+          className="flex-1 p-2 mr-2 border rounded-l-lg focus:outline-none"
         />
-        <input
-          type="text"
-          placeholder="Room"
-          value={room}
-          onChange={(e) => setRoom(e.target.value)}
-          className="p-2 mr-2"
-        />
-        <button onClick={handleJoinRoom} className="p-2 text-gray-800 bg-gray-300">
-          Unirme a una sala
+        <button onClick={handleSendMessage} className="p-2 text-white bg-blue-500 rounded-r-lg">
+          Enviar
         </button>
-        <button onClick={handleLeaveRoom} className="p-2 ml-2 text-white bg-red-500">
+        <button onClick={handleLeaveRoom} className="p-2 ml-2 text-white bg-red-500 rounded-lg">
           Salir de la sala
-        </button>
-      </div>
-      <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
-        {chat.map((item, index) => (
-          <div key={index} className="mb-2">
-            {item.user && (
-              <div>
-                <strong>{item.user}:</strong> {item.message}
-              </div>
-            )}
-            {item.systemMessage && <div className="italic">{item.systemMessage}</div>}
-          </div>
-        ))}
-      </div>
-      <div className="p-4 text-white bg-blue-500">
-        <input
-          type="text"
-          placeholder="Mensaje"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="p-2 mr-2 text-black"
-        />
-        <button onClick={handleSendMessage} className="p-2 text-white bg-green-500">
-          Enviar mensaje
         </button>
       </div>
     </div>
   );
-}
+};
 
-export default Chat;
+export default ChatRoom;

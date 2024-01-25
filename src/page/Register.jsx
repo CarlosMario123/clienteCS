@@ -1,6 +1,6 @@
 import { useForm } from "../hooks/useForm"
 import useRegistration from "../hooks/userRegistration";
-
+import { Link } from "react-router-dom";
 
 
 export default function Register() {
@@ -13,10 +13,10 @@ export default function Register() {
 
     }
   return (
-    <div className="hero min-h-screen bg-base-200">
-    <div className="hero-content flex-col lg:flex-row-reverse">
+    <div className="min-h-screen hero bg-base-200">
+    <div className="flex-col hero-content lg:flex-row-reverse">
 
-      <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+      <div className="w-full max-w-sm shadow-2xl card shrink-0 bg-base-100">
         <form className="card-body">
           <div className="form-control">
             <label className="label">
@@ -31,9 +31,10 @@ export default function Register() {
             <input type="password" placeholder="password" className="input input-bordered" required name="password" onChange={inputChange} />
         
           </div>
-          <div className="form-control mt-6">
+          <div className="mt-6 form-control">
             <button className="btn btn-primary" onClick={enviar}>Registrar</button>
           </div>
+          <Link to={"/login"} className="w-full text-center">Logearse</Link>
         </form>
       </div>
     </div>

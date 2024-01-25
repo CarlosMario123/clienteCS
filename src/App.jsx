@@ -4,6 +4,9 @@ import Login from './page/login';
 import PrivateRoute from './routesPrivate/PrivateRoute';
 import Home from './page/Home';
 import Chat from './page/Prueba';
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:8000'); 
 function App() {
 
 
@@ -15,7 +18,7 @@ function App() {
     <Route path="/" element={<Register/>} />
     <Route path="/login" element = {<Login/>}/>
      <Route path='/home' element = {<PrivateRoute element={<Home/>}/>}/>
-     <Route path='/rooms' element = {<PrivateRoute element={<Chat/>}/>}/>
+     <Route path='/rooms/:roomName' element = {<PrivateRoute element={<Chat socket={socket}/>}/>}/>
   </Routes>
 
 </Router>
