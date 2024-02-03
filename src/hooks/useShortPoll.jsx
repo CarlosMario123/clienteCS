@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useShortPollingWithWrite = (url, interval = 2000) => {
+const useShortPollingWithWrite = (url, interval = 1000) => {
   const [contenidoActual, setContenidoActual] = useState('');
 
   const obtenerActualizacion = async () => {

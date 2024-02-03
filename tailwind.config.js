@@ -6,7 +6,7 @@ export default {
     extend: {},
   },
   daisyui: {
-    themes: ["cupcake","synthwave","winter"],
+    themes: ["cupcake","synthwave","winter","dark"],
   },
   plugins: [require("daisyui")],
 }
